@@ -1,3 +1,16 @@
+# dbt artifacts
+target/
+dbt_packages/
+logs/
+dbt_modules/
+
+# Python / Jupyter
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.env
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]

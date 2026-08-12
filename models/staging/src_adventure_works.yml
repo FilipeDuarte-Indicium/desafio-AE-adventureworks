@@ -6,16 +6,112 @@ sources:
     schema: raw
     tables:
       - name: address
+        columns:
+          - name: _c0
+            description: "Chave primária do endereço"
+            tests:
+              - unique
+              - not_null
+
       - name: country_region
+        columns:
+          - name: _c0
+            description: "Código do país"
+            tests:
+              - unique
+              - not_null
+
       - name: credit_card
+        columns:
+          - name: _c0
+            description: "Chave primária do cartão de crédito"
+            tests:
+              - unique
+              - not_null
+
       - name: customer
+        columns:
+          - name: _c0
+            description: "Chave primária do cliente"
+            tests:
+              - unique
+              - not_null
+
       - name: person
+        columns:
+          - name: _c0
+            description: "Chave primária da pessoa"
+            tests:
+              - unique
+              - not_null
+
       - name: product
+        columns:
+          - name: _c0
+            description: "Chave primária do produto"
+            tests:
+              - unique
+              - not_null
+
       - name: product_category
+        columns:
+          - name: _c0
+            description: "Chave primária da categoria"
+            tests:
+              - unique
+              - not_null
+
       - name: product_subcategory
+        columns:
+          - name: _c0
+            description: "Chave primária da subcategoria"
+            tests:
+              - unique
+              - not_null
+
       - name: sales_order_detail
+        columns:
+          - name: _c1
+            description: "Chave primária do item do pedido"
+            tests:
+              - unique
+              - not_null
+
       - name: sales_order_header
+        columns:
+          - name: _c0
+            description: "Chave primária do pedido"
+            tests:
+              - unique
+              - not_null
+
       - name: sales_order_header_sales_reason
+        columns:
+          - name: _c0
+            description: "Chave estrangeira do pedido"
+            tests:
+              - not_null
+
       - name: sales_reason
+        columns:
+          - name: _c0
+            description: "Chave primária do motivo de venda"
+            tests:
+              - unique
+              - not_null
+
       - name: state_province
+        columns:
+          - name: _c0
+            description: "Chave primária do estado"
+            tests:
+              - unique
+              - not_null
+
       - name: store
+        columns:
+          - name: _c0
+            description: "Chave primária da loja"
+            tests:
+              - unique
+              - not_null

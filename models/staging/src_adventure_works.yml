@@ -1,0 +1,21 @@
+version: 2
+
+sources:
+  - name: adventure_works
+    database: adventure_works
+    schema: raw
+    tables:
+      - name: address
+      - name: country_region
+      - name: credit_card
+      - name: customer
+      - name: person
+      - name: product
+      - name: product_category
+      - name: product_subcategory
+      - name: sales_order_detail
+      - name: sales_order_header
+      - name: sales_order_header_sales_reason
+      - name: sales_reason
+      - name: state_province
+      - name: store

@@ -6,6 +6,10 @@ person as (
 )
 select
     c.id_cliente,
-    coalesce(p.nome_completo, concat('Cliente Loja ID ', c.id_loja)) as nome_cliente
+    coalesce(
+        nullif(p.nome_completo, ''), 
+        concat('Cliente B2B ID ', c.id_loja),
+        concat('Cliente ID ', c.id_cliente)
+    ) as nome_cliente
 from customer c
 left join person p on c.id_pessoa = p.id_pessoa

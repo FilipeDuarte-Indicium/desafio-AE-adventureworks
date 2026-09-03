@@ -1,0 +1,41 @@
+version: 2
+
+models:
+  - name: fct_vendas
+    description: "Tabela fato contendo métricas de vendas ao nível de item de pedido."
+    columns:
+      - name: id_pedido_item
+        description: "Chave primária do item de pedido."
+        tests:
+          - unique
+          - not_null
+
+      - name: id_cliente
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_clientes')
+              field: id_cliente
+
+      - name: id_produto
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_produtos')
+              field: id_produto
+
+  - name: dim_clientes
+    description: "Dimensão de clientes unificando B2C e B2B."
+    columns:
+      - name: id_cliente
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_produtos
+    description: "Dimensão de produtos."
+    columns:
+      - name: id_produto
+        tests:
+          - unique
+          - not_null

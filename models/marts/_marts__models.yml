@@ -2,30 +2,39 @@ version: 2
 
 models:
   - name: fct_vendas
-    description: "Tabela fato contendo métricas de vendas ao nível de item de pedido."
+    description: "Tabela fato na granularidade de item de pedido."
     columns:
       - name: id_pedido_item
-        description: "Chave primária do item de pedido."
         tests:
           - unique
           - not_null
-
+      - name: id_pedido
+        tests:
+          - not_null
       - name: id_cliente
         tests:
           - not_null
           - relationships:
               to: ref('dim_clientes')
               field: id_cliente
-
       - name: id_produto
         tests:
           - not_null
           - relationships:
               to: ref('dim_produtos')
               field: id_produto
+      - name: id_local
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_locais')
+              field: id_local
+      - name: valor_bruto
+        tests:
+          - not_null
 
   - name: dim_clientes
-    description: "Dimensão de clientes unificando B2C e B2B."
+    description: "Dimensão de clientes unificando pessoas físicas e jurídicas (B2B/B2C)."
     columns:
       - name: id_cliente
         tests:
@@ -33,9 +42,40 @@ models:
           - not_null
 
   - name: dim_produtos
-    description: "Dimensão de produtos."
+    description: "Dimensão de produtos comercializados."
     columns:
       - name: id_produto
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_locais
+    description: "Dimensão geográfica com endereços de entrega."
+    columns:
+      - name: id_local
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_cartoes_credito
+    description: "Dimensão de meios de pagamento via cartão."
+    columns:
+      - name: id_cartao_credito
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_motivos_venda
+    description: "Dimensão de motivos de venda."
+    columns:
+      - name: nome_motivo_venda
+        tests:
+          - not_null
+
+  - name: dim_datas
+    description: "Dimensão calendário."
+    columns:
+      - name: data_dia
         tests:
           - unique
           - not_null

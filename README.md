@@ -37,7 +37,7 @@ A modelagem foi desenvolvida seguindo os princípios de Kimball (Star Schema), d
 ## 🔍 Qualidade de Dados & Regras de Negócio
 
 * **Auditoria Contábil (CEO Audit):** Validação estrita do faturamento bruto do ano de 2011 fixado em exatamente **$12.646.112,16**.
-* **Garantia de Qualidade (`dbt test`):** Implementação de **27 testes automatizados** de integridade referencial (`relationships`), unicidade (`unique`) e campos obrigatórios (`not_null`).
+* **Garantia de Qualidade (`dbt test`):** Implementação de **52 testes automatizados** de integridade referencial (`relationships`), unicidade (`unique`), campos obrigatórios (`not_null`), e unitários na pasta /tests.
 * **Tratamento de Integridade:** Mapeamento de FKs ausentes para chaves genéricas de segurança (`0`) e eliminação de valores nulos em relatórios visuais.
 
 ---

@@ -29,6 +29,21 @@ models:
           - relationships:
               to: ref('dim_locais')
               field: id_local
+      - name: id_cartao_credito
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_cartoes_credito')
+              field: id_cartao_credito
+      - name: data_dia
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_datas')
+              field: data_dia
+      - name: nome_motivo_venda
+        tests:
+          - not_null
       - name: valor_bruto
         tests:
           - not_null
@@ -42,11 +57,17 @@ models:
           - not_null
 
   - name: dim_produtos
-    description: "Dimensão de produtos comercializados."
+    description: "Dimensão de produtos comercializados, com categoria e subcategoria."
     columns:
       - name: id_produto
         tests:
           - unique
+          - not_null
+      - name: nome_subcategoria
+        tests:
+          - not_null
+      - name: nome_categoria
+        tests:
           - not_null
 
   - name: dim_locais
@@ -66,8 +87,12 @@ models:
           - not_null
 
   - name: dim_motivos_venda
-    description: "Dimensão de motivos de venda."
+    description: "Dimensão de motivos de venda, agregados por pedido."
     columns:
+      - name: id_pedido
+        tests:
+          - unique
+          - not_null
       - name: nome_motivo_venda
         tests:
           - not_null

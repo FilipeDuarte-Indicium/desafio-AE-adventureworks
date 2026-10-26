@@ -1,0 +1,112 @@
+version: 2
+
+models:
+  - name: stg_address
+    description: "Endereços (staging)."
+    columns:
+      - name: id_endereco
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_countryregion
+    description: "Países e regiões (staging)."
+    columns:
+      - name: codigo_pais
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_creditcard
+    description: "Cartões de crédito (staging)."
+    columns:
+      - name: id_cartao_credito
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_customer
+    description: "Clientes (staging)."
+    columns:
+      - name: id_cliente
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_person
+    description: "Pessoas (staging)."
+    columns:
+      - name: id_pessoa
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_product
+    description: "Produtos (staging)."
+    columns:
+      - name: id_produto
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_productcategory
+    description: "Categorias de produto (staging)."
+    columns:
+      - name: id_categoria
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_productsubcategory
+    description: "Subcategorias de produto (staging), ligadas à categoria via id_categoria."
+    columns:
+      - name: id_subcategoria
+        tests:
+          - unique
+          - not_null
+      - name: id_categoria
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_productcategory')
+              field: id_categoria
+
+  - name: stg_salesorderdetail
+    description: "Itens de pedido de venda (staging)."
+    columns:
+      - name: id_pedido_item
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_salesorderheader
+    description: "Cabeçalhos de pedido de venda (staging)."
+    columns:
+      - name: id_pedido
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_salesreason
+    description: "Motivos de venda (staging)."
+    columns:
+      - name: id_motivo_venda
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_stateprovince
+    description: "Estados e províncias (staging)."
+    columns:
+      - name: id_estado
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_store
+    description: "Lojas (staging)."
+    columns:
+      - name: id_entidade_negocio
+        tests:
+          - unique
+          - not_null

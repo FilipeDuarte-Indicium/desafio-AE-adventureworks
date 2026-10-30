@@ -23,7 +23,7 @@ A modelagem foi desenvolvida seguindo os princípios de Kimball (Star Schema), e
 * **Camada Staging (`stg_*`, 14 modelos):** Limpeza, padronização de tipos de dados e renomeação de colunas da base transacional. Inclui `stg_productcategory` e `stg_productsubcategory`.
 * **Camada Intermediate (`int_*`, 5 modelos):** Joins e regras de negócio.
   * `int_produtos_enriquecidos`: produto + subcategoria + categoria (fallback "Sem subcategoria" / "Sem categoria").
-  * `int_clientes_unificados`: clientes B2C (Pessoas Físicas) e B2B (Lojas Corporativas) com fallback via `COALESCE`.
+  * `int_clientes_unificados`: clientes B2C (Pessoas Físicas) e B2B (Lojas Corporativas) com nome resolvido via `COALESCE`: clientes B2B usam o nome real da loja (`store`); B2C usam o nome da pessoa; sem nome, `Cliente ID <id>`.
   * `int_locais_hierarquia`: endereço + estado + país (Cidade, Estado e País).
   * `int_motivos_venda_pedido`: motivos de venda agregados por pedido.
   * `int_vendas_itens`: cabeçalho + itens do pedido, com `valor_bruto`, `valor_desconto` e `valor_liquido`.
@@ -31,7 +31,7 @@ A modelagem foi desenvolvida seguindo os princípios de Kimball (Star Schema), e
   * `dim_produtos`: cadastro de produtos com **categoria e subcategoria**, permitindo segmentar a análise por produto.
   * `dim_clientes`: clientes B2C e B2B unificados.
   * `dim_locais`: mapeamento geográfico hierárquico (Cidade, Estado e País).
-  * `dim_datas`: inteligência temporal diária (Ano, Mês, Dia, Trimestre).
+  * `dim_datas`: inteligência temporal diária (`ano`, `mes`, `ano_mes` e `dia_semana`, de 2011 a 2015).
   * `dim_cartoes_credito`: meios de pagamento, com o membro `0 / "Não informado"` para pedidos sem cartão.
   * `dim_motivos_venda`: razões de compra por pedido (ex: *Promotion*).
   * `fct_vendas`: granularidade no nível do item de pedido (`id_pedido_item`), com Foreign Keys, métricas financeiras, `nome_status_pedido` (nome legível do status) e `nome_motivo_venda`.

@@ -34,14 +34,14 @@ A modelagem foi desenvolvida seguindo os princípios de Kimball (Star Schema), e
   * `dim_datas`: inteligência temporal diária (Ano, Mês, Dia, Trimestre).
   * `dim_cartoes_credito`: meios de pagamento, com o membro `0 / "Não informado"` para pedidos sem cartão.
   * `dim_motivos_venda`: razões de compra por pedido (ex: *Promotion*).
-  * `fct_vendas`: granularidade no nível do item de pedido (`id_pedido_item`), com Foreign Keys, métricas financeiras e `nome_motivo_venda`.
+  * `fct_vendas`: granularidade no nível do item de pedido (`id_pedido_item`), com Foreign Keys, métricas financeiras, `nome_status_pedido` (nome legível do status) e `nome_motivo_venda`.
 
 ---
 
 ## 🔍 Qualidade de Dados & Regras de Negócio
 
 * **Auditoria Contábil (CEO Audit):** Validação estrita do faturamento bruto do ano de 2011 fixado em exatamente **$12.646.112,16**.
-* **Garantia de Qualidade:** **103 testes automatizados** (unicidade, campos obrigatórios, valores aceitos, integridade referencial e 4 testes singulares na pasta `/tests`), cobrindo sources, staging, intermediate e marts. O `dbt build` executa 26 modelos + 103 testes (129 itens).
+* **Garantia de Qualidade:** **105 testes automatizados** (unicidade, campos obrigatórios, valores aceitos, integridade referencial e 4 testes singulares na pasta `/tests`), cobrindo sources, staging, intermediate e marts. O `dbt build` executa 26 modelos + 105 testes (131 itens).
 * **Tratamento de Integridade:** Mapeamento de FKs ausentes para chaves genéricas de segurança (`0`), com o membro correspondente na dimensão, e eliminação de valores nulos em relatórios visuais.
 
 ---
@@ -65,6 +65,15 @@ O modelo dimensional exposto no Databricks AI/BI responde com precisão às 6 qu
 # 1. Clonar este repositório
 git clone https://github.com/FilipeDuarte-Indicium/desafio-AE-adventureworks.git
 
-# 2. Executar modelos e testes na ordem do DAG
+# 2. Executar os modelos
+dbt run
+
+# 3. Testar as sources
+dbt test --select source:*
+
+# 4. Testar os modelos
+dbt test
+
+# Alternativa: modelos e testes na ordem do DAG
 dbt build
 ```

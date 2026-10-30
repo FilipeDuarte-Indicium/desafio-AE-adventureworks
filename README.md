@@ -18,27 +18,31 @@ Este repositório contém a solução completa de Analytics Engineering para a *
 
 ## 🏗️ Arquitetura e Modelagem Dimensional
 
-A modelagem foi desenvolvida seguindo os princípios de Kimball (Star Schema), dividida em camadas claras de transformação:
+A modelagem foi desenvolvida seguindo os princípios de Kimball (Star Schema), em três camadas: **staging → intermediate → marts**. A lógica de negócio fica na camada intermediate; os marts apenas expõem o modelo dimensional.
 
-* **Camada Staging (`stg_*`):** Limpeza, padronização de tipos de dados e renomeação de colunas da base transacional.
-* **Camada Dimensão (`dim_*`):**
-  * `dim_produtos`: Cadastro central de produtos e seus atributos.
-  * `dim_clientes`: Unificação de clientes B2C (Pessoas Físicas) e B2B (Lojas Corporativas) com tratamento de fallback via `COALESCE`.
-  * `dim_locais`: Mapeamento geográfico hierárquico (Cidade, Estado e País).
-  * `dim_datas`: Inteligência temporal diária (Ano, Mês, Dia, Trimestre).
-  * `dim_cartoes_credito`: Mapeamento de meios de pagamento.
-  * `dim_motivos_venda`: Categorização das razões de compra (ex: *Promotion*).
-* **Camada Fato (`fct_vendas`):**
-  * Granularidade no nível do item de pedido (`id_pedido_item`).
-  * Mapeamento de Foreign Keys conectantes e pré-cálculo de métricas financeiras (`valor_bruto`, `valor_desconto`, `valor_liquido`).
+* **Camada Staging (`stg_*`, 14 modelos):** Limpeza, padronização de tipos de dados e renomeação de colunas da base transacional. Inclui `stg_productcategory` e `stg_productsubcategory`.
+* **Camada Intermediate (`int_*`, 5 modelos):** Joins e regras de negócio.
+  * `int_produtos_enriquecidos`: produto + subcategoria + categoria (fallback "Sem subcategoria" / "Sem categoria").
+  * `int_clientes_unificados`: clientes B2C (Pessoas Físicas) e B2B (Lojas Corporativas) com fallback via `COALESCE`.
+  * `int_locais_hierarquia`: endereço + estado + país (Cidade, Estado e País).
+  * `int_motivos_venda_pedido`: motivos de venda agregados por pedido.
+  * `int_vendas_itens`: cabeçalho + itens do pedido, com `valor_bruto`, `valor_desconto` e `valor_liquido`.
+* **Camada Marts (7 modelos):**
+  * `dim_produtos`: cadastro de produtos com **categoria e subcategoria**, permitindo segmentar a análise por produto.
+  * `dim_clientes`: clientes B2C e B2B unificados.
+  * `dim_locais`: mapeamento geográfico hierárquico (Cidade, Estado e País).
+  * `dim_datas`: inteligência temporal diária (Ano, Mês, Dia, Trimestre).
+  * `dim_cartoes_credito`: meios de pagamento, com o membro `0 / "Não informado"` para pedidos sem cartão.
+  * `dim_motivos_venda`: razões de compra por pedido (ex: *Promotion*).
+  * `fct_vendas`: granularidade no nível do item de pedido (`id_pedido_item`), com Foreign Keys, métricas financeiras e `nome_motivo_venda`.
 
 ---
 
 ## 🔍 Qualidade de Dados & Regras de Negócio
 
 * **Auditoria Contábil (CEO Audit):** Validação estrita do faturamento bruto do ano de 2011 fixado em exatamente **$12.646.112,16**.
-* **Garantia de Qualidade (`dbt test`):** Implementação de **52 testes automatizados** de integridade referencial (`relationships`), unicidade (`unique`), campos obrigatórios (`not_null`), e unitários na pasta /tests.
-* **Tratamento de Integridade:** Mapeamento de FKs ausentes para chaves genéricas de segurança (`0`) e eliminação de valores nulos em relatórios visuais.
+* **Garantia de Qualidade:** **103 testes automatizados** (unicidade, campos obrigatórios, valores aceitos, integridade referencial e 4 testes singulares na pasta `/tests`), cobrindo sources, staging, intermediate e marts. O `dbt build` executa 26 modelos + 103 testes (129 itens).
+* **Tratamento de Integridade:** Mapeamento de FKs ausentes para chaves genéricas de segurança (`0`), com o membro correspondente na dimensão, e eliminação de valores nulos em relatórios visuais.
 
 ---
 
@@ -59,10 +63,8 @@ O modelo dimensional exposto no Databricks AI/BI responde com precisão às 6 qu
 
 ```bash
 # 1. Clonar este repositório
-git clone [https://github.com/FilipeDuarte-Indicium/desafio-AE-adventureworks.git](https://github.com/FilipeDuarte-Indicium/desafio-AE-adventureworks.git)
+git clone https://github.com/FilipeDuarte-Indicium/desafio-AE-adventureworks.git
 
-# 2. Executar as transformações de modelos
-dbt run
-
-# 3. Executar os testes de qualidade de dados
-dbt test
+# 2. Executar modelos e testes na ordem do DAG
+dbt build
+```

@@ -17,6 +17,15 @@ select
     h.data_pedido,
     cast(h.data_pedido as date) as data_dia,
     h.status_pedido,
+    case h.status_pedido
+        when 1 then 'Em processamento'
+        when 2 then 'Aprovado'
+        when 3 then 'Pendente de estoque'
+        when 4 then 'Rejeitado'
+        when 5 then 'Enviado'
+        when 6 then 'Cancelado'
+        else 'Não informado'
+    end as nome_status_pedido,
     coalesce(m.nome_motivo_venda, 'Não informado') as nome_motivo_venda,
     d.quantidade,
     d.preco_unitario,

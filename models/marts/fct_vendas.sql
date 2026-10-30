@@ -11,6 +11,7 @@ select
     data_pedido,
     data_dia,
     status_pedido,
+    nome_status_pedido,
     nome_motivo_venda,
     quantidade,
     preco_unitario,

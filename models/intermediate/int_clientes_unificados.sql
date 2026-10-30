@@ -13,8 +13,8 @@ select
     c.id_loja,
     c.id_territorio,
     coalesce(
-        p.nome_completo,
         s.nome_loja,
+        p.nome_completo,
         concat('Cliente ID ', cast(c.id_cliente as string))
     ) as nome_cliente,
     case

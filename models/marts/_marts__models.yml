@@ -2,105 +2,177 @@ version: 2
 
 models:
   - name: fct_vendas
-    description: "Tabela fato na granularidade de item de pedido."
+    description: "Tabela fato de vendas, na granularidade de item de pedido (uma linha por item). Concentra as chaves das dimensões e as métricas financeiras."
     columns:
       - name: id_pedido_item
+        description: "Chave primária da fato: identificador do item do pedido."
         tests:
           - unique
           - not_null
       - name: id_pedido
+        description: "Identificador do pedido de venda (cabeçalho). Um pedido tem um ou mais itens."
         tests:
           - not_null
       - name: id_cliente
+        description: "Chave estrangeira para dim_clientes."
         tests:
           - not_null
           - relationships:
               to: ref('dim_clientes')
               field: id_cliente
       - name: id_produto
+        description: "Chave estrangeira para dim_produtos."
         tests:
           - not_null
           - relationships:
               to: ref('dim_produtos')
               field: id_produto
       - name: id_local
+        description: "Chave estrangeira para dim_locais (endereço de entrega). 0 quando o pedido não tem endereço."
         tests:
           - not_null
           - relationships:
               to: ref('dim_locais')
               field: id_local
       - name: id_cartao_credito
+        description: "Chave estrangeira para dim_cartoes_credito. 0 (Não informado) quando o pedido não tem cartão."
         tests:
           - not_null
           - relationships:
               to: ref('dim_cartoes_credito')
               field: id_cartao_credito
+      - name: data_pedido
+        description: "Data e hora em que o pedido foi realizado."
       - name: data_dia
+        description: "Data do pedido (sem hora). Chave estrangeira para dim_datas."
         tests:
           - not_null
           - relationships:
               to: ref('dim_datas')
               field: data_dia
+      - name: status_pedido
+        description: "Código do status do pedido (1 a 6)."
+      - name: nome_status_pedido
+        description: "Nome do status do pedido: Em processamento, Aprovado, Pendente de estoque, Rejeitado, Enviado ou Cancelado."
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['Em processamento', 'Aprovado', 'Pendente de estoque', 'Rejeitado', 'Enviado', 'Cancelado', 'Não informado']
       - name: nome_motivo_venda
+        description: "Motivo(s) de venda do pedido (ex: Promotion). Pedidos com mais de um motivo trazem os nomes separados por vírgula; sem motivo, 'Não informado'."
         tests:
           - not_null
+      - name: quantidade
+        description: "Quantidade de unidades do produto no item."
+      - name: preco_unitario
+        description: "Preço unitário do produto no item, antes do desconto."
+      - name: desconto_unitario
+        description: "Percentual de desconto aplicado ao item (0 a 1)."
       - name: valor_bruto
+        description: "Receita bruta do item: quantidade x preço unitário."
         tests:
           - not_null
+      - name: valor_desconto
+        description: "Valor do desconto do item: quantidade x preço unitário x desconto unitário."
+      - name: valor_liquido
+        description: "Receita líquida do item: valor bruto menos o valor do desconto."
 
   - name: dim_clientes
-    description: "Dimensão de clientes unificando pessoas físicas e jurídicas (B2B/B2C)."
+    description: "Dimensão de clientes unificando pessoas físicas (B2C) e lojas (B2B)."
     columns:
       - name: id_cliente
+        description: "Chave primária da dimensão: identificador do cliente."
         tests:
           - unique
           - not_null
+      - name: id_pessoa
+        description: "Identificador da pessoa (clientes B2C). Nulo para clientes B2B."
+      - name: id_loja
+        description: "Identificador da loja (clientes B2B). Nulo para clientes B2C."
+      - name: id_territorio
+        description: "Identificador do território de vendas do cliente."
+      - name: nome_cliente
+        description: "Nome completo da pessoa ou nome da loja. Sem nome, 'Cliente ID <id>'."
+      - name: tipo_cliente
+        description: "Tipo do cliente: B2C (pessoa física) ou B2B (loja)."
 
   - name: dim_produtos
     description: "Dimensão de produtos comercializados, com categoria e subcategoria."
     columns:
       - name: id_produto
+        description: "Chave primária da dimensão: identificador do produto."
         tests:
           - unique
           - not_null
+      - name: nome_produto
+        description: "Nome do produto."
+      - name: codigo_produto
+        description: "Código (número) do produto."
+      - name: id_subcategoria
+        description: "Identificador da subcategoria do produto."
       - name: nome_subcategoria
+        description: "Nome da subcategoria. 'Sem subcategoria' quando o produto não é classificado."
         tests:
           - not_null
+      - name: id_categoria
+        description: "Identificador da categoria do produto."
       - name: nome_categoria
+        description: "Nome da categoria. 'Sem categoria' quando o produto não é classificado."
         tests:
           - not_null
 
   - name: dim_locais
-    description: "Dimensão geográfica com endereços de entrega."
+    description: "Dimensão geográfica com os endereços de entrega, em hierarquia cidade, estado e país."
     columns:
       - name: id_local
+        description: "Chave primária da dimensão: identificador do endereço."
         tests:
           - unique
           - not_null
+      - name: cidade
+        description: "Cidade do endereço."
+      - name: estado
+        description: "Estado ou província do endereço."
+      - name: pais
+        description: "País do endereço."
 
   - name: dim_cartoes_credito
-    description: "Dimensão de meios de pagamento via cartão."
+    description: "Dimensão de meios de pagamento via cartão. Inclui o membro 0 (Não informado) para pedidos sem cartão."
     columns:
       - name: id_cartao_credito
+        description: "Chave primária da dimensão: identificador do cartão. 0 representa 'Não informado'."
         tests:
           - unique
           - not_null
+      - name: tipo_cartao
+        description: "Tipo (bandeira) do cartão de crédito."
 
   - name: dim_motivos_venda
     description: "Dimensão de motivos de venda, agregados por pedido."
     columns:
       - name: id_pedido
+        description: "Chave primária da dimensão: identificador do pedido."
         tests:
           - unique
           - not_null
       - name: nome_motivo_venda
+        description: "Motivo(s) de venda do pedido, separados por vírgula quando há mais de um."
         tests:
           - not_null
 
   - name: dim_datas
-    description: "Dimensão calendário."
+    description: "Dimensão calendário diária."
     columns:
       - name: data_dia
+        description: "Chave primária da dimensão: data."
         tests:
           - unique
           - not_null
+      - name: ano
+        description: "Ano da data."
+      - name: mes
+        description: "Mês da data (1 a 12)."
+      - name: ano_mes
+        description: "Ano e mês no formato yyyy-MM."
+      - name: dia_semana
+        description: "Dia da semana (1 = domingo a 7 = sábado)."

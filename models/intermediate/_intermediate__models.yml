@@ -1,0 +1,53 @@
+version: 2
+
+models:
+  - name: int_produtos_enriquecidos
+    description: "Produtos enriquecidos com subcategoria e categoria. Produtos sem classificação recebem 'Sem subcategoria' / 'Sem categoria'."
+    columns:
+      - name: id_produto
+        tests:
+          - unique
+          - not_null
+
+  - name: int_clientes_unificados
+    description: "Clientes B2C (pessoas físicas) e B2B (lojas) unificados, com nome resolvido por fallback via coalesce."
+    columns:
+      - name: id_cliente
+        tests:
+          - unique
+          - not_null
+      - name: tipo_cliente
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['B2B', 'B2C']
+
+  - name: int_locais_hierarquia
+    description: "Hierarquia geográfica dos endereços: cidade, estado e país."
+    columns:
+      - name: id_local
+        tests:
+          - unique
+          - not_null
+
+  - name: int_motivos_venda_pedido
+    description: "Motivos de venda agregados por pedido, separados por vírgula."
+    columns:
+      - name: id_pedido
+        tests:
+          - unique
+          - not_null
+
+  - name: int_vendas_itens
+    description: "Itens de pedido com cabeçalho, motivo de venda e métricas financeiras (valor bruto, desconto e líquido)."
+    columns:
+      - name: id_pedido_item
+        tests:
+          - unique
+          - not_null
+      - name: id_pedido
+        tests:
+          - not_null
+      - name: nome_motivo_venda
+        tests:
+          - not_null

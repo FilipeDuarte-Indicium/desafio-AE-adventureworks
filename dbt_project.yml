@@ -41,5 +41,7 @@ models:
     
     staging:
       +schema: raw_stg
+    intermediate:
+      +schema: intermediate
     marts:
       +schema: dev

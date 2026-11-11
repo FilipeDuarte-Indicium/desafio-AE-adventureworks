@@ -5,7 +5,7 @@
 [![SQL](https://img.shields.io/badge/Language-SQL-blue?logo=postgresql)](https://www.postgresql.org/)
 
 **Autor:** Filipe Duarte  
-**Cargo:** Analytics Engineer  
+**Cargo:** AI Engineer  
 **Projeto:** Desafio Final Indicium — Analytics Engineering  
 
 ---
